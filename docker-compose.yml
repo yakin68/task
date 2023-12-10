@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  php:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    container_name: myapp
+    restart: always
+    depends_on:
+      - mysql
+    networks:
+      - yakinnet
+      
+  mysql:
+    image: mcr.microsoft.com/mssql/server:2022-preview-ubuntu-22.04
+    container_name: mssqldb
+    env_file: ./.env
+    ports:
+    - 1433:1433
+    volumes:
+      - mssql-data:/var/lib/mssql
+    networks:
+      - yakinnet
+
+networks:
+  yakinnet:
+
+volumes:
+  mssql-data:
+
