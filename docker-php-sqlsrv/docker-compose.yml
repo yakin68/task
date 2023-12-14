@@ -1,0 +1,19 @@
+version: '3'
+services:
+  php-mssql-sqlsrv:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+    - "./:/app:delegated"
+    ports:
+    - 80:80
+    - 443:443
+
+  mssql:
+    container_name: mssql
+    image: microsoft/mssql-server-linux
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=p@ssw0rd
+

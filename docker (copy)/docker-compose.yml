@@ -1,0 +1,42 @@
+version: "3.7"
+
+services:
+
+  nginx:
+    image: nginx:1.19
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/web-root
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - php
+         
+  php:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: myapp
+    restart: always
+    depends_on:
+      - mysql
+    networks:
+      - yakinnet
+      
+  mysql:
+    image: mysql:8.0
+		container_name: mysqldb    
+    env_file: ./mysql/.env
+    ports:
+    - 3306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - yakinnet
+
+networks:
+  yakinnet:
+
+volumes:
+  mysql-data:
+

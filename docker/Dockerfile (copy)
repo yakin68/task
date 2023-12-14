@@ -1,0 +1,22 @@
+FROM php:7.1-apache
+
+# Install dependencies and Install SQL Server extensions
+RUN set -eux; \
+    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && \
+    ACCEPT_EULA=Y apt-get install -y msodbcsql13.1 && \
+    ACCEPT_EULA=Y apt-get install -y mssql-tools13.1 && \
+    echo 'export PATH="$PATH:/opt/mssql-tools13.1/bin"' >> ~/.bashrc && \
+    source ~/.bashrc && \
+    apt-get install -y unixodbc-dev && \
+    pecl install sqlsrv-4.3.0 pdo_sqlsrv-4.3.0 && \
+    docker-php-ext-enable sqlsrv pdo_sqlsrv && \
+    apt-get update
+    
+COPY QuickDbTest.php /var/www/html/
+
+CMD ["php", "/var/www/html/QuickDbTest.php"]
+
+
+		
